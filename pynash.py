@@ -1,4 +1,5 @@
-from pyqueue import Queue, count_words
+from pyqueue import Queue
+from tasks import count_words
 
 
 queue = Queue()

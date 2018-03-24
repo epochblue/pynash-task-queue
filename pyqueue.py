@@ -1,3 +1,4 @@
+import pickle
 import uuid
 
 
@@ -8,11 +9,13 @@ class Queue(object):
 
     def enqueue_job(self, func, *args, **kwargs):
         job = Job(func, *args, **kwargs)
-        self.conn.lpush(self.queue_key, job)
+        compact_job = pickle.dumps(job, protocol=pickle.HIGHEST_PROTOCOL)
+        self.conn.lpush(self.queue_key, compact_job)
         return job.id
 
     def dequeue_job(self):
-        job = self.conn.rpop(self.queue_key)
+        compact_job = self.conn.rpop(self.queue_key)
+        job = pickle.loads(compact_job)
         job.execute()
         return job
 

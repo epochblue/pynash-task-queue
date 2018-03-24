@@ -14,7 +14,7 @@ class Queue(object):
         return job.id
 
     def dequeue_job(self):
-        compact_job = self.conn.rpop(self.queue_key)
+        _, compact_job = self.conn.brpop(self.queue_key)
         job = pickle.loads(compact_job)
         job.execute()
         return job

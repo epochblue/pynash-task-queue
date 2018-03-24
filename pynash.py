@@ -1,8 +1,11 @@
+import redis
+
 from pyqueue import Queue
 from tasks import count_words
 
 
-queue = Queue()
+r = redis.StrictRedis()
+queue = Queue(r, 'pynash')
 
 job1_id = queue.enqueue_job(count_words, 'declaration-of-independence.txt')
 print('Queued {}'.format(job1_id))

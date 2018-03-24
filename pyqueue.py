@@ -2,16 +2,17 @@ import uuid
 
 
 class Queue(object):
-    def __init__(self):
-        self.queue = list()
+    def __init__(self, conn, queue_key):
+        self.conn = conn
+        self.queue_key = queue_key
 
     def enqueue_job(self, func, *args, **kwargs):
         job = Job(func, *args, **kwargs)
-        self.queue.append(job)
+        self.conn.lpush(self.queue_key, job)
         return job.id
 
     def dequeue_job(self):
-        job = self.queue.pop(0)
+        job = self.conn.rpop(self.queue_key)
         job.execute()
         return job
 
